@@ -1,14 +1,23 @@
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import MyNavbar from './components/MyNavbar';
-import BirthdayUsersTable from './components/BirthdayUsersTable';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import HomePage from './pages/HomePage';
+import LoginPage from './pages/LoginPage';
+import UsersPage from './pages/UsersPage';
+import SignInPage from './pages/SignInPage';
 
 function App() {
   return (
-    <div className="">
+    <Router>
       <MyNavbar />
-      <BirthdayUsersTable />
-    </div>
+      <Routes>
+        <Route path="/" element={<HomePage />} exact />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/users" element={<UsersPage />} />
+        <Route path="/signin" element={<SignInPage />} />
+      </Routes>
+    </Router>
   );
 }
 
