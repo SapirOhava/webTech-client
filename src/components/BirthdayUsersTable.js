@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import 'bootstrap/dist/css/bootstrap.min.css';
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -6,6 +7,7 @@ function BirthdayUsersTable() {
   const [users, setUsers] = useState([]);
   const [displayedUsers, setDisplayedUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const token = useSelector((state) => state.auth.token);
 
   const fetchUsers = async () => {
     try {
@@ -25,15 +27,18 @@ function BirthdayUsersTable() {
   };
 
   useEffect(() => {
-    fetchUsers()
-      .then((data) => {
-        setUsers(data);
-        setDisplayedUsers(data);
-      })
-      .catch((error) => {
-        console.error('There was a problem with the fetch operation:', error);
-      });
-  }, []);
+    // This function will run on component mount and whenever the token changes.
+    if (token) {
+      fetchUsers()
+        .then((data) => {
+          setUsers(data);
+          setDisplayedUsers(data);
+        })
+        .catch((error) => {
+          console.error('There was a problem with the fetch operation:', error);
+        });
+    }
+  }, [token]);
 
   const handleShowBirthdays = async () => {
     try {

@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { setToken } from '../slices/authSlice';
 const API_URL = process.env.REACT_APP_API_URL;
 
 const LoginPage = () => {
@@ -9,6 +11,7 @@ const LoginPage = () => {
   });
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -32,7 +35,7 @@ const LoginPage = () => {
 
       if (response.status === 200) {
         console.log('Auth successful:', data.message);
-        localStorage.setItem('token', data.token);
+        dispatch(setToken(data.token));
         navigate('/');
       } else {
         setError(data.message); // Set error message from server
