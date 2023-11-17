@@ -34,7 +34,7 @@ const LoginPage = () => {
       const data = await response.json();
 
       if (response.status === 200) {
-        console.log('Auth successful:', data.message);
+        console.log('Auth successful:', data);
         dispatch(setToken(data.token));
         navigate('/');
       } else {

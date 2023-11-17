@@ -2,11 +2,14 @@ import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignInAlt, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const MyNavbar = () => {
   const [isNavCollapsed, setIsNavCollapsed] = useState(true);
-
   const handleNavCollapse = () => setIsNavCollapsed(!isNavCollapsed);
+
+  const token = useSelector((state) => state.auth.token);
+  const isLoggedIn = !!token;
 
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
@@ -31,24 +34,36 @@ const MyNavbar = () => {
         >
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li className="nav-item">
-              <Link className="nav-link" to="/login">
-                <FontAwesomeIcon icon={faSignInAlt} />
-                <span className="ms-2">Login</span>
+              <Link className="nav-link" to="/users">
+                <span className="ms-2">Users</span>
               </Link>
             </li>
-            {/* Assuming you will handle the logout functionality here */}
-            <li className="nav-item">
-              <a className="nav-link" href="#">
-                <FontAwesomeIcon icon={faSignOutAlt} />
-                <span className="ms-2">Logout</span>
-              </a>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/signin">
-                <FontAwesomeIcon icon={faSignInAlt} />
-                <span className="ms-2">Sign Up</span>
-              </Link>
-            </li>
+          </ul>
+          <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
+            {!isLoggedIn && (
+              <>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/login">
+                    <FontAwesomeIcon icon={faSignInAlt} />
+                    <span className="ms-2">Login</span>
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/signin">
+                    <FontAwesomeIcon icon={faSignInAlt} />
+                    <span className="ms-2">Sign Up</span>
+                  </Link>
+                </li>
+              </>
+            )}
+            {isLoggedIn && (
+              <li className="nav-item">
+                <a className="nav-link" href="#">
+                  <FontAwesomeIcon icon={faSignOutAlt} />
+                  <span className="ms-2">Logout</span>
+                </a>
+              </li>
+            )}
           </ul>
         </div>
       </div>
