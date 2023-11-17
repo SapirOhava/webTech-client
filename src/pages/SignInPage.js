@@ -19,10 +19,9 @@ const SignInPage = () => {
   };
 
   const handleSubmit = async (event) => {
-    event.preventDefault();
-    setError('');
-
     try {
+      event.preventDefault();
+      setError('');
       const response = await fetch(`${API_URL}/api/user/signup`, {
         method: 'POST',
         headers: {
