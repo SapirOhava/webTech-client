@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
 const BirthdayModal = ({ show, onClose }) => {
+  const user = useSelector((state) => state.auth.user);
   if (!show) {
     return null;
   }
@@ -10,15 +11,20 @@ const BirthdayModal = ({ show, onClose }) => {
       <div className="modal-dialog">
         <div className="modal-content">
           <div className="modal-header">
-            <h5 className="modal-title">Happy Birthday!</h5>
+            <h5 className="modal-title">Happy Birthday {user.username}!</h5>
             <button
               type="button"
               className="btn-close"
               onClick={onClose}
             ></button>
           </div>
-          <div className="modal-body">
-            <p>We hope you have a great day!</p>
+          <div className="modal-body text-center">
+            <img
+              src="/happyBirthday.gif"
+              alt="Happy Birthday"
+              className="img-fluid"
+              style={{ maxWidth: '100%' }}
+            />
           </div>
         </div>
       </div>

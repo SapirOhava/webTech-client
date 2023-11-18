@@ -8,13 +8,14 @@ export const authSlice = createSlice({
     user: localStorage.getItem('token')
       ? jwtDecode(localStorage.getItem('token'))
       : null,
+    birthdayModalShown: localStorage.getItem('birthdayModalShown') === 'true',
   },
   reducers: {
     setToken: (state, action) => {
       try {
         const decodedToken = jwtDecode(action.payload);
-        state.token = action.payload; // Store the original token
-        state.user = decodedToken; // Store decoded data
+        state.token = action.payload;
+        state.user = decodedToken;
         localStorage.setItem('token', action.payload);
       } catch (error) {
         console.error('Failed to decode token:', error);
@@ -25,9 +26,22 @@ export const authSlice = createSlice({
       state.user = null;
       localStorage.removeItem('token');
     },
-    //additional reducers like 'refreshToken' could be added here
+    setBirthdayModalShown: (state, action) => {
+      localStorage.setItem('birthdayModalShown', action.payload);
+      state.birthdayModalShown = action.payload;
+    },
+    clearBirthdayModalShown(state) {
+      localStorage.removeItem('birthdayModalShown');
+      state.birthdayModalShown = false;
+    },
+    //additional reducers like 'refreshToken' could be added here ( do later ..)
   },
 });
 
-export const { setToken, clearToken } = authSlice.actions;
+export const {
+  setToken,
+  clearToken,
+  setBirthdayModalShown,
+  clearBirthdayModalShown,
+} = authSlice.actions;
 export default authSlice.reducer;
