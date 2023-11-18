@@ -9,6 +9,27 @@ function UsersPage() {
   const [isLoading, setIsLoading] = useState(false);
   const token = useSelector((state) => state.auth.token);
 
+  const sendHappyBirthday = async (sendToUser) => {
+    try {
+      setIsLoading(true);
+      const res = await fetch(`${API_URL}/api/user/BirthdayWish`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ sendToEmail: sendToUser.email }),
+      });
+      if (!res.ok) {
+        throw new Error('Network response was not ok');
+      }
+    } catch (error) {
+      console.error('error with sending happy birthday wish :', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const fetchUsers = async () => {
     try {
       setIsLoading(true);
@@ -92,19 +113,41 @@ function UsersPage() {
             <table className="table">
               <thead>
                 <tr>
-                  <th>Name</th>
+                  <th>username</th>
                   <th>email</th>
                   <th>Birthday</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
-                {displayedUsers.map((user, index) => (
-                  <tr key={index}>
-                    <td>{user.name}</td>
-                    <td>{user.email}</td>
-                    <td>{user.birthday}</td>
-                  </tr>
-                ))}
+                {displayedUsers.map((user, index) => {
+                  const userBirthday = new Date(user.birthday);
+                  const currentDate = new Date();
+                  const userBirthMonthDay = `${
+                    userBirthday.getMonth() + 1
+                  }-${userBirthday.getDate()}`;
+                  const currentMonthDay = `${
+                    currentDate.getMonth() + 1
+                  }-${currentDate.getDate()}`;
+
+                  return (
+                    <tr key={index}>
+                      <td>{user.username}</td>
+                      <td>{user.email}</td>
+                      <td>{user.birthday}</td>
+                      <td>
+                        {userBirthMonthDay === currentMonthDay && (
+                          <button
+                            className="btn btn-secondary m-2"
+                            onClick={() => sendHappyBirthday(user)}
+                          >
+                            Send Happy Birthday Wish
+                          </button>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           )}
