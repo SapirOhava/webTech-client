@@ -1,15 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignInAlt, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { clearToken } from '../slices/authSlice';
 
 const MyNavbar = () => {
   const [isNavCollapsed, setIsNavCollapsed] = useState(true);
   const handleNavCollapse = () => setIsNavCollapsed(!isNavCollapsed);
+  const [showBirthdayModal, setShowBirthdayModal] = useState(false);
+  const dispatch = useDispatch();
 
   const token = useSelector((state) => state.auth.token);
+  const user = useSelector((state) => state.auth.user);
   const isLoggedIn = !!token;
+
+  const handleLogout = () => {
+    dispatch(clearToken());
+  };
+
+  useEffect(() => {
+    const checkBirthday = () => {
+      if (!user || !user.birthday) {
+        return false;
+      }
+
+      const birthday = new Date(user.birthday);
+      const today = new Date();
+
+      return (
+        birthday.getMonth() === today.getMonth() &&
+        birthday.getDate() === today.getDate()
+      );
+    };
+    if (!!token && checkBirthday()) {
+      setShowBirthdayModal(true);
+    }
+  }, [token, user]);
 
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
@@ -57,12 +85,20 @@ const MyNavbar = () => {
               </>
             )}
             {isLoggedIn && (
-              <li className="nav-item">
-                <a className="nav-link" href="#">
-                  <FontAwesomeIcon icon={faSignOutAlt} />
-                  <span className="ms-2">Logout</span>
-                </a>
-              </li>
+              <>
+                <li className="nav-item">
+                  <span className="ms-2 nav-link">Hi {user.username}</span>
+                </li>
+                <li className="nav-item">
+                  <button
+                    className="nav-link btn btn-link"
+                    onClick={handleLogout}
+                  >
+                    <FontAwesomeIcon icon={faSignOutAlt} />
+                    <span className="ms-2">Logout</span>
+                  </button>
+                </li>
+              </>
             )}
           </ul>
         </div>

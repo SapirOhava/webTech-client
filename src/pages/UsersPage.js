@@ -11,7 +11,6 @@ function UsersPage() {
 
   const fetchUsers = async () => {
     try {
-      console.log('fetch users: ', token);
       setIsLoading(true);
       const response = await fetch(`${API_URL}/api/user`, {
         headers: {
@@ -32,7 +31,6 @@ function UsersPage() {
   };
 
   useEffect(() => {
-    console.log(token);
     if (token) {
       fetchUsers()
         .then((data) => {
