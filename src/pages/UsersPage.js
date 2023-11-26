@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import 'bootstrap/dist/css/bootstrap.min.css';
-const API_URL = process.env.REACT_APP_API_URL;
+import apiAxios from '../axiosConfig';
 
 function UsersPage() {
   const [users, setUsers] = useState([]);
@@ -12,17 +12,18 @@ function UsersPage() {
   const sendHappyBirthday = async (sendToUser) => {
     try {
       setIsLoading(true);
-      const res = await fetch(`${API_URL}/api/user/BirthdayWish`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
+      const res = await apiAxios.post(
+        '/api/user/BirthdayWish',
+        {
+          sendToEmail: sendToUser.email,
         },
-        body: JSON.stringify({ sendToEmail: sendToUser.email }),
-      });
-      if (!res.ok) {
-        throw new Error('Network response was not ok');
-      }
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log('sendHappyBirthday :', res);
     } catch (error) {
       console.error('error with sending happy birthday wish :', error);
     } finally {
@@ -33,16 +34,12 @@ function UsersPage() {
   const fetchUsers = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch(`${API_URL}/api/user`, {
+      const response = await apiAxios.get('/api/user', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      const res = await response.json();
-      return res;
+      return response.data;
     } catch (error) {
       console.error('error with the fetching users:', error);
       return [];
@@ -67,17 +64,12 @@ function UsersPage() {
   const handleShowBirthdays = async () => {
     try {
       setIsLoading(true);
-      const res = await fetch(`${API_URL}/api/user/todayBirthday`, {
+      const res = await apiAxios.get('/api/user/todayBirthday', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-
-      if (!res.ok) {
-        throw new Error('Network response was not ok');
-      }
-      const usersWithBirthdayToday = await res.json();
-      setDisplayedUsers(usersWithBirthdayToday);
+      setDisplayedUsers(res.data);
     } catch (error) {
       console.error(
         'error with the fetching users with birthday today :',
@@ -131,7 +123,7 @@ function UsersPage() {
                   }-${currentDate.getDate()}`;
 
                   return (
-                    <tr key={index}>
+                    <tr key={user._id}>
                       <td>{user.username}</td>
                       <td>{user.email}</td>
                       <td>{user.birthday}</td>

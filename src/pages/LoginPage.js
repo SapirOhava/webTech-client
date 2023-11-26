@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { setToken } from '../slices/authSlice';
-const API_URL = process.env.REACT_APP_API_URL;
+import apiAxios from '../axiosConfig';
 
 const LoginPage = () => {
   const [credentials, setCredentials] = useState({
@@ -23,22 +23,14 @@ const LoginPage = () => {
     setError(''); // Resetting error message
 
     try {
-      const response = await fetch(`${API_URL}/api/user/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(credentials),
-      });
-
-      const data = await response.json();
+      const response = await apiAxios.post('/api/user/login', credentials);
 
       if (response.status === 200) {
-        console.log('Auth successful:', data);
-        dispatch(setToken(data.token));
+        console.log('Auth successful:', response.data);
+        dispatch(setToken(response.data.token));
         navigate('/');
       } else {
-        setError(data.message); // Set error message from server
+        setError(response.data.message); // Set error message from server
       }
     } catch (error) {
       console.error('Login error:', error);

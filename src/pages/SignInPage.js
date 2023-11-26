@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-const API_URL = process.env.REACT_APP_API_URL;
+import apiAxios from '../axiosConfig';
 
 const SignInPage = () => {
   const [userDetails, setUserDetails] = useState({
@@ -22,26 +22,18 @@ const SignInPage = () => {
     try {
       event.preventDefault();
       setError('');
-      const response = await fetch(`${API_URL}/api/user/signup`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userDetails),
-      });
-
-      const data = await response.json();
+      const response = await apiAxios.post('/api/user/signup', userDetails);
 
       if (response.status === 200) {
-        console.log('Sign-in successful:', data.message);
+        console.log('Sign-in successful:', response.data.message);
         navigate('/'); // Redirect to the home page on successful sign-in
       } else {
-        console.error('Sign-in failed:', data.error);
-        setError(data.error); // Display error message
+        console.error('Sign-in failed:', response.data.error);
+        setError(response.data.error);
       }
     } catch (error) {
       console.error('Sign-in error:', error.message);
-      setError(error.message); // Display error message
+      setError(error.message);
     }
   };
 
