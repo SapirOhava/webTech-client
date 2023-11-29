@@ -1,19 +1,71 @@
 import React, { useEffect, useState } from 'react';
+import PostComponent from '../components/Post';
 import { useSelector } from 'react-redux';
 import apiAxios from '../axiosConfig';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function ProfilePage() {
   let user = useSelector((state) => state.auth.user);
+  const token = useSelector((state) => state.auth.token);
   const [post, setPost] = useState('');
-  const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useState([]); // i need to fetch the users posts
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handlePostSubmit = () => {
-    if (post) {
-      setPosts([...posts, post]);
-      setPost('');
+  const handlePostSubmit = async () => {
+    try {
+      if (post) {
+        setIsLoading(true);
+        const response = await apiAxios.post(
+          '/api/post',
+          {
+            post: {
+              content: post,
+              onModel: 'User',
+              associatedWith: user.id,
+            },
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setPosts([...posts, response.data.post]);
+        setPost('');
+      }
+    } catch (error) {
+      console.error('error with posting a post:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  const fetchUsersPosts = async () => {
+    try {
+      setIsLoading(true);
+      const response = await apiAxios.get('/api/post/user', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data.posts;
+    } catch (error) {
+      console.error('error with fetching user posts:', error);
+      return [];
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchUsersPosts()
+      .then((resPosts) => {
+        setPosts(resPosts);
+      })
+      .catch((error) => {
+        console.error('error with fetching user posts:', error);
+      });
+  }, []);
 
   return (
     <div className="container mt-5">
@@ -61,10 +113,8 @@ function ProfilePage() {
                 Upload Post
               </button>
               <div>
-                {posts.map((p, index) => (
-                  <div key={index} className="card mb-2">
-                    <div className="card-body">{p}</div>
-                  </div>
+                {posts.map((post) => (
+                  <PostComponent key={post._id} post={post} />
                 ))}
               </div>
             </div>
