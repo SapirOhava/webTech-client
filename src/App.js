@@ -15,6 +15,7 @@ import UsersPage from './pages/UsersPage';
 import SignInPage from './pages/SignInPage';
 import ErrorPage from './pages/ErrorPage';
 import ProfilePage from './pages/Profile';
+import SearchPage from './pages/SearchPage';
 
 // The error in your code is likely due to the use of useNavigate outside of the context of a Router. The useNavigate hook from React Router must be used within a component that is a child of Router. In your code, the App component itself contains the Router, which means useNavigate is being called at a level where it doesn't have access to the necessary routing context.
 function RedirectToError() {
@@ -40,6 +41,7 @@ function App() {
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/users" element={<UsersPage />} />
+        <Route path="/search" element={<SearchPage />} />
         <Route path="/signin" element={<SignInPage />} />
         <Route path="/error" element={<ErrorPage />} />
       </Routes>

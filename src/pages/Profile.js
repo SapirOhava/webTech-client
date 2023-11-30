@@ -13,13 +13,12 @@ function ProfilePage() {
 
   const handleLike = async (postId) => {
     try {
-      // Send a request to the server to toggle the like status
       const response = await apiAxios.put(
         `/api/post/${postId}/like`,
         {},
         {
           headers: {
-            Authorization: `Bearer yourAuthToken`, // Replace with your actual token
+            Authorization: `Bearer ${token}`,
           },
         }
       );
