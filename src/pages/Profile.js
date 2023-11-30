@@ -11,10 +11,33 @@ function ProfilePage() {
   const [posts, setPosts] = useState([]); // i need to fetch the users posts
   const [isLoading, setIsLoading] = useState(false);
 
+  const handleLike = async (postId) => {
+    try {
+      // Send a request to the server to toggle the like status
+      const response = await apiAxios.put(
+        `/api/post/${postId}/like`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer yourAuthToken`, // Replace with your actual token
+          },
+        }
+      );
+
+      setPosts((currentPosts) =>
+        currentPosts.map((post) =>
+          post._id === postId ? { ...post, likes: response.data.likes } : post
+        )
+      );
+    } catch (error) {
+      console.error('Error liking post:', error);
+    }
+  };
+
   const handlePostSubmit = async () => {
     try {
       if (post) {
-        setIsLoading(true);
+        // setIsLoading(true);
         const response = await apiAxios.post(
           '/api/post',
           {
@@ -36,7 +59,23 @@ function ProfilePage() {
     } catch (error) {
       console.error('error with posting a post:', error);
     } finally {
-      setIsLoading(false);
+      //   setIsLoading(false);
+    }
+  };
+
+  const handleDelete = async (postId) => {
+    try {
+      await apiAxios.delete(`/api/post/${postId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setPosts((currentPosts) =>
+        currentPosts.filter((post) => post._id !== postId)
+      );
+    } catch (error) {
+      console.error('Error deleting post:', error);
     }
   };
 
@@ -112,9 +151,14 @@ function ProfilePage() {
               >
                 Upload Post
               </button>
-              <div>
+              <div style={{ width: '100%' }}>
                 {posts.map((post) => (
-                  <PostComponent key={post._id} post={post} />
+                  <PostComponent
+                    key={post._id}
+                    post={post}
+                    onDelete={handleDelete}
+                    onLike={handleLike}
+                  />
                 ))}
               </div>
             </div>
