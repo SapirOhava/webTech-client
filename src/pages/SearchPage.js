@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import apiAxios from '../axiosConfig';
 import { useSelector } from 'react-redux';
+import UserCard from '../components/UserCard';
 
 const SearchPage = () => {
   const [query, setQuery] = useState('');
@@ -54,9 +55,7 @@ const SearchPage = () => {
       </div>
       <ul className="list-group">
         {results.map((item, index) => (
-          <li key={index} className="list-group-item">
-            {item.name}
-          </li>
+          <UserCard key={index} item={item} />
         ))}
       </ul>
     </div>

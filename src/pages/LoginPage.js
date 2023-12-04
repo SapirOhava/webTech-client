@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { setToken } from '../slices/authSlice';
+import { setTokenAndUser } from '../slices/authSlice';
 import apiAxios from '../axiosConfig';
 
 const LoginPage = () => {
@@ -27,7 +27,7 @@ const LoginPage = () => {
 
       if (response.status === 200) {
         console.log('Auth successful:', response.data);
-        dispatch(setToken(response.data.token));
+        dispatch(setTokenAndUser(response.data));
         navigate('/');
       } else {
         setError(response.data.message); // Set error message from server

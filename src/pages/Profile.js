@@ -1,15 +1,50 @@
 import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import PostComponent from '../components/Post';
 import { useSelector } from 'react-redux';
 import apiAxios from '../axiosConfig';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/css/bootstrap.min.css'; ///????
 
 function ProfilePage() {
-  let user = useSelector((state) => state.auth.user);
+  const { userId } = useParams();
+  const loggedInUser = useSelector((state) => state.auth.user);
   const token = useSelector((state) => state.auth.token);
+  const [user, setUser] = useState(loggedInUser);
   const [post, setPost] = useState('');
   const [posts, setPosts] = useState([]); // i need to fetch the users posts
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    fetchProfileData();
+  }, [userId]);
+
+  const fetchProfileData = async () => {
+    try {
+      setIsLoading(true);
+      if (userId) {
+        const userProfileResponse = await apiAxios.get(`/api/user/${userId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setUser(userProfileResponse.data.user);
+      }
+
+      const postsResponse = await apiAxios.get(
+        `/api/post/user/${userId || loggedInUser._id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setPosts(postsResponse.data.posts);
+    } catch (error) {
+      console.error('Error fetching profile data:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleLike = async (postId) => {
     try {
@@ -43,7 +78,7 @@ function ProfilePage() {
             post: {
               content: post,
               onModel: 'User',
-              associatedWith: user.id,
+              associatedWith: user._id,
             },
           },
           {
@@ -62,7 +97,7 @@ function ProfilePage() {
     }
   };
 
-  const handleDelete = async (postId) => {
+  const handlePostDelete = async (postId) => {
     try {
       await apiAxios.delete(`/api/post/${postId}`, {
         headers: {
@@ -77,33 +112,6 @@ function ProfilePage() {
       console.error('Error deleting post:', error);
     }
   };
-
-  const fetchUsersPosts = async () => {
-    try {
-      setIsLoading(true);
-      const response = await apiAxios.get('/api/post/user', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      return response.data.posts;
-    } catch (error) {
-      console.error('error with fetching user posts:', error);
-      return [];
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchUsersPosts()
-      .then((resPosts) => {
-        setPosts(resPosts);
-      })
-      .catch((error) => {
-        console.error('error with fetching user posts:', error);
-      });
-  }, []);
 
   return (
     <div className="container mt-5">
@@ -155,7 +163,7 @@ function ProfilePage() {
                   <PostComponent
                     key={post._id}
                     post={post}
-                    onDelete={handleDelete}
+                    onDelete={handlePostDelete}
                     onLike={handleLike}
                   />
                 ))}

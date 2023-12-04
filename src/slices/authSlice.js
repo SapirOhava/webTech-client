@@ -1,22 +1,23 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { jwtDecode } from 'jwt-decode';
+//import { jwtDecode } from 'jwt-decode';
 
 export const authSlice = createSlice({
   name: 'auth',
   initialState: {
     token: localStorage.getItem('token'),
-    user: localStorage.getItem('token')
-      ? jwtDecode(localStorage.getItem('token'))
+    user: localStorage.getItem('user')
+      ? JSON.parse(localStorage.getItem('user'))
       : null,
     birthdayModalShown: localStorage.getItem('birthdayModalShown') === 'true',
   },
   reducers: {
-    setToken: (state, action) => {
+    setTokenAndUser: (state, action) => {
       try {
-        const decodedToken = jwtDecode(action.payload);
-        state.token = action.payload;
-        state.user = decodedToken;
-        localStorage.setItem('token', action.payload);
+        // const decodedToken = jwtDecode(action.payload);
+        state.token = action.payload.token;
+        state.user = action.payload.user;
+        localStorage.setItem('token', action.payload.token);
+        localStorage.setItem('user', JSON.stringify(action.payload.user));
       } catch (error) {
         console.error('Failed to decode token:', error);
       }
@@ -39,7 +40,7 @@ export const authSlice = createSlice({
 });
 
 export const {
-  setToken,
+  setTokenAndUser,
   clearToken,
   setBirthdayModalShown,
   clearBirthdayModalShown,

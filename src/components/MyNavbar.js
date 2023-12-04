@@ -86,6 +86,11 @@ const MyNavbar = () => {
                   <span className="ms-2">Profile</span>
                 </Link>
               </li>
+              <li className="nav-item">
+                <Link className="nav-link" to="/search">
+                  <span className="ms-2">Search</span>
+                </Link>
+              </li>
             </ul>
             <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
               {!isLoggedIn && (
@@ -107,7 +112,7 @@ const MyNavbar = () => {
               {isLoggedIn && (
                 <>
                   <li className="nav-item">
-                    <span className="ms-2 nav-link">Hi {user.username}</span>
+                    <span className="ms-2 nav-link">Hi {user?.username}</span>
                   </li>
                   <li className="nav-item">
                     <button
