@@ -76,16 +76,20 @@ const MyNavbar = () => {
             id="navbarSupportedContent"
           >
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-              <li className="nav-item">
-                <Link className="nav-link" to="/profile">
-                  <span className="ms-2">Profile</span>
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link" to="/search">
-                  <span className="ms-2">Search</span>
-                </Link>
-              </li>
+              {isLoggedIn && (
+                <>
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/profile">
+                      <span className="ms-2">Profile</span>
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/search">
+                      <span className="ms-2">Search</span>
+                    </Link>
+                  </li>
+                </>
+              )}
             </ul>
             <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
               {!isLoggedIn && (

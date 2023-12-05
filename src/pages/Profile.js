@@ -138,7 +138,7 @@ function ProfilePage() {
                 src={user.profilePictureURL}
                 alt="Profile"
                 className="rounded-circle me-3"
-                style={{ maxWidth: '220px', objectFit: 'cover' }}
+                style={{ width: '150px', objectFit: 'cover' }}
               />
               <h1 className="card-title">{user.username}</h1>
             </div>
