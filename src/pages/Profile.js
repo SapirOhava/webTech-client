@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import PostComponent from '../components/Post';
 import { useSelector } from 'react-redux';
 import apiAxios from '../axiosConfig';
-import 'bootstrap/dist/css/bootstrap.min.css'; ///????
 
 function ProfilePage() {
+  const navigate = useNavigate();
   const { userId } = useParams();
   const loggedInUser = useSelector((state) => state.auth.user);
   const token = useSelector((state) => state.auth.token);
@@ -45,6 +45,10 @@ function ProfilePage() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleEditProfileClick = () => {
+    navigate('/editProfile');
   };
 
   const handleLike = async (postId) => {
@@ -117,7 +121,12 @@ function ProfilePage() {
   return (
     <div className="container mt-5">
       {isOwnProfile && (
-        <button className="btn btn-primary me-2">Edit Profile</button>
+        <button
+          className="btn btn-primary me-2"
+          onClick={handleEditProfileClick}
+        >
+          Edit Profile
+        </button>
       )}
       <button className="btn btn-secondary">Followers</button>
       <div className="row">
