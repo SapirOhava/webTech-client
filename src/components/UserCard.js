@@ -13,7 +13,7 @@ const UserCard = ({ item }) => {
       onClick={handleClick}
     >
       <img
-        src={'/tmpProfileImg.jpeg'}
+        src={item.profilePictureURL}
         alt={item.username}
         className="rounded-circle"
         style={{

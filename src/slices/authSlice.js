@@ -11,6 +11,11 @@ export const authSlice = createSlice({
     birthdayModalShown: localStorage.getItem('birthdayModalShown') === 'true',
   },
   reducers: {
+    setUser: (state, action) => {
+      const user = action.payload;
+      state.user = user;
+      localStorage.setItem('user', JSON.stringify(user));
+    },
     setTokenAndUser: (state, action) => {
       try {
         // const decodedToken = jwtDecode(action.payload);
@@ -41,6 +46,7 @@ export const authSlice = createSlice({
 });
 
 export const {
+  setUser,
   setTokenAndUser,
   clearTokenAndUser,
   setBirthdayModalShown,

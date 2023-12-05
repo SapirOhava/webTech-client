@@ -135,8 +135,7 @@ function ProfilePage() {
           <div className="card mb-3">
             <div className="card-body d-flex align-items-center">
               <img
-                // src={user.profilePictureURL}
-                src="/tmpProfileImg.jpeg" //change it what in the comment after
+                src={user.profilePictureURL}
                 alt="Profile"
                 className="rounded-circle me-3"
                 style={{ maxWidth: '220px', objectFit: 'cover' }}

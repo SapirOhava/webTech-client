@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import apiAxios from '../axiosConfig';
+import { useSelector, useDispatch } from 'react-redux';
+import { setUser } from '../slices/authSlice';
 
 function EditProfile() {
   const [formData, setFormData] = useState({
@@ -8,7 +11,10 @@ function EditProfile() {
     // password: '',
     profilePicture: null,
   });
+  const dispatch = useDispatch();
   const [imagePreview, setImagePreview] = useState('');
+  const loggedInUser = useSelector((state) => state.auth.user);
+  const token = useSelector((state) => state.auth.token);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -26,10 +32,31 @@ function EditProfile() {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
-    // Add logic to send data to the server
+
+    const formDataToSend = new FormData();
+    formDataToSend.append('username', formData.username);
+    formDataToSend.append('birthday', formData.birthday);
+    formDataToSend.append('email', formData.email);
+    if (formData.profilePicture) {
+      formDataToSend.append('profilePicture', formData.profilePicture);
+    }
+
+    try {
+      const response = await apiAxios.put('/api/user', formDataToSend, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          // When sending FormData, you should remove the Content-Type header from
+          // your request, allowing Axios to automatically set the correct type (multipart/form-data).
+          // Axios will set the correct type based on FormData
+        },
+      });
+      console.log(response.data); // handle response
+      dispatch(setUser(response.data.user));
+    } catch (error) {
+      console.error(error); // handle error
+    }
   };
 
   return (
