@@ -22,10 +22,11 @@ export const authSlice = createSlice({
         console.error('Failed to decode token:', error);
       }
     },
-    clearToken(state) {
+    clearTokenAndUser(state) {
       state.token = null;
       state.user = null;
       localStorage.removeItem('token');
+      localStorage.removeItem('user');
     },
     setBirthdayModalShown: (state, action) => {
       localStorage.setItem('birthdayModalShown', action.payload);
@@ -41,7 +42,7 @@ export const authSlice = createSlice({
 
 export const {
   setTokenAndUser,
-  clearToken,
+  clearTokenAndUser,
   setBirthdayModalShown,
   clearBirthdayModalShown,
 } = authSlice.actions;

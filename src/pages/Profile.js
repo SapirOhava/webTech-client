@@ -13,6 +13,7 @@ function ProfilePage() {
   const [post, setPost] = useState('');
   const [posts, setPosts] = useState([]); // i need to fetch the users posts
   const [isLoading, setIsLoading] = useState(false);
+  const isOwnProfile = userId ? userId === loggedInUser._id : true;
 
   useEffect(() => {
     fetchProfileData();
@@ -115,7 +116,10 @@ function ProfilePage() {
 
   return (
     <div className="container mt-5">
-      <button className="btn btn-primary">Edit Profile</button>
+      {isOwnProfile && (
+        <button className="btn btn-primary me-2">Edit Profile</button>
+      )}
+      <button className="btn btn-secondary">Followers</button>
       <div className="row">
         {/* Profile Header */}
         <div className="col-12">
@@ -146,18 +150,22 @@ function ProfilePage() {
           <div className="card mb-3">
             <div className="card-body d-flex flex-column align-items-start">
               <h5 className="card-title">Posts</h5>
-              <textarea
-                className="form-control mb-3"
-                placeholder="Write something..."
-                value={post}
-                onChange={(e) => setPost(e.target.value)}
-              ></textarea>
-              <button
-                className="btn btn-success mb-3"
-                onClick={handlePostSubmit}
-              >
-                Upload Post
-              </button>
+              {isOwnProfile && (
+                <>
+                  <textarea
+                    className="form-control mb-3"
+                    placeholder="Write something..."
+                    value={post}
+                    onChange={(e) => setPost(e.target.value)}
+                  ></textarea>
+                  <button
+                    className="btn btn-success mb-3"
+                    onClick={handlePostSubmit}
+                  >
+                    Upload Post
+                  </button>
+                </>
+              )}
               <div style={{ width: '100%' }}>
                 {posts.map((post) => (
                   <PostComponent
@@ -165,6 +173,7 @@ function ProfilePage() {
                     post={post}
                     onDelete={handlePostDelete}
                     onLike={handleLike}
+                    isOwnProfile={isOwnProfile}
                   />
                 ))}
               </div>

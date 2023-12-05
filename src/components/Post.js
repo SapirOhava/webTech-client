@@ -2,7 +2,7 @@ import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faThumbsUp } from '@fortawesome/free-solid-svg-icons';
 
-const PostComponent = ({ post, onDelete, onLike }) => {
+const PostComponent = ({ post, onDelete, onLike, isOwnProfile }) => {
   // Format the date
   const formatDate = (dateString) => {
     const options = {
@@ -29,12 +29,14 @@ const PostComponent = ({ post, onDelete, onLike }) => {
           <span>{post.likes.length} </span>
           <FontAwesomeIcon icon={faThumbsUp} />
         </button>
-        <button
-          className="btn btn-danger btn-sm"
-          onClick={() => onDelete(post._id)}
-        >
-          <FontAwesomeIcon icon={faTrash} />
-        </button>
+        {isOwnProfile && (
+          <button
+            className="btn btn-danger btn-sm"
+            onClick={() => onDelete(post._id)}
+          >
+            <FontAwesomeIcon icon={faTrash} />
+          </button>
+        )}
       </div>
     </div>
   );

@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import {
-  clearToken,
+  clearTokenAndUser,
   setBirthdayModalShown,
   clearBirthdayModalShown,
 } from '../slices/authSlice';
@@ -25,7 +25,7 @@ const MyNavbar = () => {
   const isLoggedIn = !!token;
 
   const handleLogout = () => {
-    dispatch(clearToken());
+    dispatch(clearTokenAndUser());
     dispatch(clearBirthdayModalShown());
   };
 
@@ -76,11 +76,6 @@ const MyNavbar = () => {
             id="navbarSupportedContent"
           >
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-              <li className="nav-item">
-                <Link className="nav-link" to="/users">
-                  <span className="ms-2">Users</span>
-                </Link>
-              </li>
               <li className="nav-item">
                 <Link className="nav-link" to="/profile">
                   <span className="ms-2">Profile</span>
