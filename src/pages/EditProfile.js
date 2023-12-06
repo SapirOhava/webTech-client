@@ -2,19 +2,22 @@ import React, { useState } from 'react';
 import apiAxios from '../axiosConfig';
 import { useSelector, useDispatch } from 'react-redux';
 import { setUser } from '../slices/authSlice';
+import { formatToYYYYMMDD } from '../utils/dateUtils';
+import { useNavigate } from 'react-router-dom';
 
 function EditProfile() {
+  const loggedInUser = useSelector((state) => state.auth.user);
+  const token = useSelector((state) => state.auth.token);
   const [formData, setFormData] = useState({
-    username: '',
-    birthday: '',
-    email: '',
+    username: loggedInUser.username,
+    //email: loggedInUser.email,
+    birthday: formatToYYYYMMDD(loggedInUser.birthday),
     // password: '',
     profilePicture: null,
   });
   const dispatch = useDispatch();
   const [imagePreview, setImagePreview] = useState('');
-  const loggedInUser = useSelector((state) => state.auth.user);
-  const token = useSelector((state) => state.auth.token);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -38,7 +41,7 @@ function EditProfile() {
     const formDataToSend = new FormData();
     formDataToSend.append('username', formData.username);
     formDataToSend.append('birthday', formData.birthday);
-    formDataToSend.append('email', formData.email);
+    //formDataToSend.append('email', formData.email);
     if (formData.profilePicture) {
       formDataToSend.append('profilePicture', formData.profilePicture);
     }
@@ -52,8 +55,8 @@ function EditProfile() {
           // Axios will set the correct type based on FormData
         },
       });
-      console.log(response.data); // handle response
       dispatch(setUser(response.data.user));
+      navigate('/');
     } catch (error) {
       console.error(error); // handle error
     }
@@ -91,7 +94,7 @@ function EditProfile() {
             required
           />
         </div>
-        <div className="mb-3">
+        {/* <div className="mb-3">
           <label htmlFor="email" className="form-label">
             Email
           </label>
@@ -104,7 +107,7 @@ function EditProfile() {
             onChange={handleChange}
             required
           />
-        </div>
+        </div> */}
         {/* <div className="mb-3">
           <label htmlFor="password" className="form-label">
             Password

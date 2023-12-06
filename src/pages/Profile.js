@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import PostComponent from '../components/Post';
 import { useSelector } from 'react-redux';
 import apiAxios from '../axiosConfig';
+import { formatDate } from '../utils/dateUtils';
 
 function ProfilePage() {
   const navigate = useNavigate();
@@ -92,7 +93,7 @@ function ProfilePage() {
             },
           }
         );
-        setPosts([...posts, response.data.post]);
+        setPosts([response.data.post, ...posts]);
         setPost('');
       }
     } catch (error) {
@@ -138,7 +139,7 @@ function ProfilePage() {
                 src={user.profilePictureURL}
                 alt="Profile"
                 className="rounded-circle me-3"
-                style={{ width: '150px', objectFit: 'cover' }}
+                style={{ width: '220px', objectFit: 'cover' }}
               />
               <h1 className="card-title">{user.username}</h1>
             </div>
@@ -150,7 +151,9 @@ function ProfilePage() {
             <div className="card-body">
               <h5 className="card-title">About Me</h5>
               <p className="card-text">{user.email}</p>
-              <p className="card-text">{user.birthday}</p>
+              <p className="card-text">
+                {user.birthday && formatDate(user.birthday)}
+              </p>
             </div>
           </div>
         </div>
