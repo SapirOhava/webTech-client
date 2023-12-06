@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignInAlt, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import {
@@ -12,6 +12,7 @@ import {
 import BirthdayModal from './BirthdayModal';
 
 const MyNavbar = () => {
+  const navigate = useNavigate();
   const [isNavCollapsed, setIsNavCollapsed] = useState(true);
   const handleNavCollapse = () => setIsNavCollapsed(!isNavCollapsed);
   const [showBirthdayModal, setShowBirthdayModal] = useState(false);
@@ -27,6 +28,7 @@ const MyNavbar = () => {
   const handleLogout = () => {
     dispatch(clearTokenAndUser());
     dispatch(clearBirthdayModalShown());
+    navigate('/');
   };
 
   const handleCloseBirthdayModal = () => {
@@ -79,7 +81,7 @@ const MyNavbar = () => {
               {isLoggedIn && (
                 <>
                   <li className="nav-item">
-                    <Link className="nav-link" to="/profile">
+                    <Link className="nav-link" to={`/user/${user._id}`}>
                       <span className="ms-2">Profile</span>
                     </Link>
                   </li>

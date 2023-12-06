@@ -13,32 +13,32 @@ function ProfilePage() {
   const [post, setPost] = useState('');
   const [posts, setPosts] = useState([]); // i need to fetch the users posts
   const [isLoading, setIsLoading] = useState(false);
-  const isOwnProfile = userId ? userId === loggedInUser._id : true;
+  const isOwnProfile = userId === loggedInUser._id;
 
   useEffect(() => {
-    fetchProfileData();
+    if (!userId) {
+      navigate('/');
+    } else {
+      fetchProfileData();
+    }
   }, [userId]);
 
   const fetchProfileData = async () => {
     try {
       setIsLoading(true);
-      if (userId) {
-        const userProfileResponse = await apiAxios.get(`/api/user/${userId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setUser(userProfileResponse.data.user);
-      }
 
-      const postsResponse = await apiAxios.get(
-        `/api/post/user/${userId || loggedInUser._id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const userProfileResponse = await apiAxios.get(`/api/user/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setUser(userProfileResponse.data.user);
+
+      const postsResponse = await apiAxios.get(`/api/post/user/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       setPosts(postsResponse.data.posts);
     } catch (error) {
       console.error('Error fetching profile data:', error);
